@@ -1,0 +1,60 @@
+services:
+  nginx:
+    image: nginx:latest
+    container_name: lemp-webserver
+    restart: always
+    links:
+      - php
+      - db
+    volumes:
+      - ./app:/var/www/app/:ro
+      - "./nginx/conf/nginx.conf:/etc/nginx/conf/nginx.conf:ro"
+      - "./nginx/conf.d:/etc/nginx/conf.d:ro"
+    ports:
+      - 80:80
+
+  php:
+    #  build:
+    #    context: .
+    #    dockerfile: Dockerfile
+    image: ewan1011/php:latest
+    container_name: lemp-php
+    restart: always
+    volumes:
+      - ./app:/var/www/app
+    depends_on:
+      - db
+    links:
+      - db
+    ports:
+      - 9000:9000
+
+  db:
+    image: mariadb:latest
+    container_name: lemp-mariadb
+    restart: always
+    volumes:
+      - db-data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: user
+      MYSQL_PASSWORD: 1234
+      MYSQL_DATABASE: docker
+    ports:
+      - 3306:3306
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: lemp-phpmyadmin
+    restart: always
+    ports:
+      - 8080:80
+    volumes:
+      - /sessions
+    depends_on:
+      - db
+    links:
+      - db
+
+volumes:
+  db-data:
