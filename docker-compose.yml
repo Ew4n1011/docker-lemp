@@ -22,6 +22,12 @@ services:
     restart: always
     volumes:
       - ./app:/var/www/app
+    environment:
+      PMA_PORT: 8080
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
+      MARIADB_USER: user
+      MARIADB_PASSWORD: 1234
+      MARIADB_DATABASE: docker
     depends_on:
       - db
     links:
@@ -36,10 +42,10 @@ services:
     volumes:
       - db-data:/var/lib/mysql
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_USER: user
-      MYSQL_PASSWORD: 1234
-      MYSQL_DATABASE: docker
+      MARIADB_ROOT_PASSWORD: root
+      MARIADB_USER: user
+      MARIADB_PASSWORD: 1234
+      MARIADB_DATABASE: docker
     ports:
       - 3306:3306
 
